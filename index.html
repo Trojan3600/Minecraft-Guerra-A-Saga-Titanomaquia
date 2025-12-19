@@ -195,21 +195,30 @@
             height: 2px;
             background: rgba(255, 255, 255, 0.4);
         }
+         /* Estilos Específicos do Card dos Líderes (Pantheom) */
+        .pantheom-card { transition: all 0.4s ease; }
+        .pantheom-card:hover { transform: translateY(-10px) scale(1.02); }
+        .leader-img-container {
+            /* Cria o efeito de fade na parte de baixo da imagem do boneco */
+            mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+        }
         
-        /* Election Progress Bar */
-        .vote-bar-bg {
-            width: 100%;
-            height: 8px;
-            background-color: #1a1a1a;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 8px;
+        /* Nomes Flutuantes na Capa */
+        #floating-names-container { position: absolute; inset: 0; pointer-events: none; z-index: 5; overflow: hidden; }
+        .floating-name {
+            position: absolute;
+            color: rgba(255, 215, 0, 0.3);
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-shadow: 0 0 5px rgba(0,0,0,0.8);
+            white-space: nowrap;
         }
-        .vote-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #B8860B, #FFD700);
-            transition: width 0.5s ease-out;
-        }
+        
+        /* Outros utilitários */
+        .card-hover:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.5), 0 0 15px rgba(184, 134, 11, 0.3); }
+        .farm-taken { opacity: 0.5; cursor: not-allowed !important; filter: grayscale(80%); }
     </style>
 </head>
 <body class="bg-bedrock text-gray-200 font-body overflow-x-hidden selection:bg-gold selection:text-black">
@@ -234,9 +243,10 @@
     </nav>
 
     <header class="relative h-screen flex items-center justify-center overflow-hidden bg-obsidian">
+        <div id="floating-names-container"></div>
+
         <div class="absolute inset-0 z-0">
-            <!-- Imagem Local: atenas.jpg -->
-            <img src="atenas.jpg" alt="Greek Minecraft Landscape" class="w-full h-full object-cover opacity-50 grayscale brightness-75">
+            <img src="img/atenas.jpg" alt="Background" class="w-full h-full object-cover opacity-50 grayscale brightness-75">
             <div class="absolute inset-0 bg-gradient-to-b from-transparent via-bedrock/60 to-bedrock"></div>
         </div>
         
@@ -244,14 +254,43 @@
             <div class="mb-4 inline-block px-4 py-1 border border-gold/50 rounded-full bg-black/50 backdrop-blur-sm">
                 <span class="text-gold text-xs font-bold tracking-[0.3em] uppercase">Saga: A Titanomaquia</span>
             </div>
+            
             <h1 class="text-5xl md:text-7xl font-heading font-black text-white mb-6 leading-tight drop-shadow-2xl">
                 MINECRAFT <span class="text-transparent bg-clip-text bg-gradient-to-r from-gold to-yellow-200">GUERRA</span>
             </h1>
+            
             <p class="text-lg md:text-2xl font-subheading text-gray-300 italic mb-8 max-w-2xl mx-auto border-l-4 border-gold pl-6 text-left">
                 "Tebas olha para baixo, entediado com a paz. Ele exige glória. Ele exige sangue. Ele exige um Campeão."
             </p>
 
-            <div id="join-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+            <div class="mb-12 flex flex-col items-center gap-8">
+                <div class="text-center p-6 bg-black/40 rounded-xl border border-gold/30 backdrop-blur-md shadow-[0_0_30px_rgba(255,215,0,0.1)] hover:scale-105 transition-transform duration-500 cursor-default">
+                    <p class="text-gold text-sm uppercase tracking-[0.2em] mb-2 font-bold flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-sm animate-pulse">history_edu</span> Era da Guerra
+                    </p>
+                    <div class="flex items-baseline justify-center gap-3">
+                        <span class="font-heading font-black text-4xl text-stone-500 mr-2">DIA</span>
+                        <span id="server-days" class="font-heading font-black text-7xl text-white drop-shadow-[0_0_20px_rgba(255,215,0,0.6)]">0</span>
+                    </div>
+                    <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-2">Desde 15 Dez 2025</p>
+                </div>
+
+                <div class="flex items-center gap-3 bg-obsidian/80 border border-stone-700 px-6 py-2 rounded-full hover:border-gold/50 transition-all cursor-default">
+                    <span class="material-symbols-outlined text-gold text-sm">groups</span>
+                    <span class="text-xs font-bold uppercase tracking-widest text-gray-400">Guerreiros Convocados:</span>
+                    <span id="participant-count" class="text-lg font-heading font-bold text-white">0</span>
+                </div>
+            </div>
+
+            <div class="block">
+                <a href="#introducao" class="group relative inline-flex items-center gap-2 px-6 py-3 bg-transparent border border-stone-600 text-gray-400 font-bold uppercase tracking-widest text-xs hover:bg-white/5 hover:text-white hover:border-white transition-all duration-300">
+                    Ler os Decretos
+                    <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform text-sm">arrow_downward</span>
+                </a>
+            </div>
+        </div>
+    </header>
+    <div id="join-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/90 backdrop-blur-sm" onclick="closeJoinModal()"></div>
         <div class="relative bg-stone-900 border-2 border-gold p-8 rounded-lg max-w-md w-full shadow-[0_0_50px_rgba(255,215,0,0.2)] animate-[pulse_0.2s_ease-out]">
             <button onclick="closeJoinModal()" class="absolute top-4 right-4 text-gray-500 hover:text-white">
@@ -277,13 +316,6 @@
             </div>
         </div>
     </div>
-
-            <a href="#introducao" class="group relative inline-flex items-center gap-2 px-8 py-4 bg-transparent border-2 border-gold text-gold font-bold uppercase tracking-widest hover:bg-gold hover:text-black transition-all duration-300">
-                Ler os Decretos
-                <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_downward</span>
-            </a>
-        </div>
-    </header>
 
     <!-- INTRODUÇÃO / RP -->
     <section id="introducao" class="py-24 bg-obsidian border-b border-stone-800 fade-in-section relative overflow-hidden">
@@ -364,7 +396,7 @@
             </p>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                <div class="bg-black/60 border-2 border-emerald-900 p-8 rounded-xl shadow-[0_0_30px_rgba(16,185,129,0.1)] hover:border-emerald-400 hover:shadow-[0_0_40px_rgba(16,185,129,0.3)] transition-all duration-500 group relative overflow-hidden transform hover:-translate-y-1">
+                <div class="bg-black/60 border-2 border-emerald-900 p-8 rounded-xl shadow-[0_0_30px_rgba(16,185,129,0.1)] hover:border-emerald-400 transition-all duration-500 group relative overflow-hidden transform hover:-translate-y-1">
                     <div class="absolute inset-0 bg-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     <h3 class="text-2xl font-heading text-emerald-400 mb-4 group-hover:text-emerald-300 flex items-center justify-center gap-3">
                         <span class="material-symbols-outlined">wb_sunny</span> Segunda a Sexta
@@ -374,7 +406,7 @@
                     </div>
                 </div>
 
-                <div class="bg-black/60 border-2 border-red-900 p-8 rounded-xl shadow-[0_0_30px_rgba(239,68,68,0.1)] hover:border-red-500 hover:shadow-[0_0_40px_rgba(239,68,68,0.3)] transition-all duration-500 group relative overflow-hidden transform hover:-translate-y-1">
+                <div class="bg-black/60 border-2 border-red-900 p-8 rounded-xl shadow-[0_0_30px_rgba(239,68,68,0.1)] hover:border-red-500 transition-all duration-500 group relative overflow-hidden transform hover:-translate-y-1">
                     <div class="absolute inset-0 bg-red-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     <h3 class="text-2xl font-heading text-red-500 mb-4 group-hover:text-red-400 flex items-center justify-center gap-3">
                         <span class="material-symbols-outlined">local_fire_department</span> Finais de Semana
@@ -387,96 +419,103 @@
         </div>
     </section>
 
-    <!-- NOVA SEÇÃO: ELEIÇÃO DE LÍDERES -->
-    <section id="eleicao" class="py-20 bg-stone-900 border-b border-stone-800 fade-in-section relative">
+    <!-- NOVA SEÇÃO: PANTHEOM DE LÍDERES -->
+    <section id="pantheom" class="py-24 bg-stone-900 border-b border-stone-800 fade-in-section relative">
          <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/black-scales.png')] opacity-20"></div>
          <div class="max-w-7xl mx-auto px-4 relative z-10">
+             
              <div class="text-center mb-16">
-                <span class="material-symbols-outlined text-6xl text-purple-500 mb-4">how_to_vote</span>
-                <h2 class="text-4xl font-heading text-white mb-4">A Ascensão dos Reis</h2>
-                <div class="h-1 w-24 bg-purple-500 mx-auto"></div>
-                <p class="mt-4 text-gray-400">O trono não é dado, é conquistado pelo povo. Escolha os 4 pilares de Tebas.</p>
+                <span class="material-symbols-outlined text-6xl text-gold mb-4 drop-shadow-[0_0_15px_rgba(255,215,0,0.8)]">crown</span>
+                <h2 class="text-4xl font-heading text-white mb-4">Pantheom dos Líderes</h2>
+                <div class="h-1 w-32 bg-gold mx-auto box-shadow-[0_0_10px_gold]"></div>
+                <p class="mt-4 text-gray-400">Os Quatro Pilares que sustentarão o destino da Titanomaquia.</p>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Coluna Esquerda: Inscrição / Seu Voto -->
-                <div class="lg:col-span-1 bg-obsidian border border-purple-500/30 p-6 rounded-lg shadow-lg h-fit sticky top-24">
-                    <h3 class="text-xl font-heading text-purple-400 mb-4">Sua Voz</h3>
-                    
-                    <div id="election-status-box" class="mb-6 p-3 bg-black/40 rounded border border-stone-700 text-center text-sm">
-                        Status: <span id="election-status-text" class="text-white font-bold">Inscrições Abertas</span>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                
+                <div class="pantheom-card bg-obsidian border-2 border-red-600 rounded-lg overflow-hidden relative shadow-[0_0_25px_rgba(220,38,38,0.2)] hover:shadow-[0_0_40px_rgba(220,38,38,0.5)]">
+                    <div class="absolute top-0 right-0 p-2 z-20">
+                         <span class="bg-red-700 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Clã Vermelho</span>
                     </div>
-
-                    <!-- Form de Inscrição -->
-                    <div id="candidate-form-box" class="space-y-3">
-                        <label class="block text-gray-400 text-xs font-bold uppercase">Deseja Liderar?</label>
-                        <input type="text" id="new-candidate-name" class="input-mythic" placeholder="Seu Nick">
+                    <div class="h-64 bg-gradient-to-b from-red-900/20 to-obsidian relative leader-img-container flex items-center justify-center">
                         
-                        <label class="block text-gray-400 text-xs font-bold uppercase mt-2">Lema de Campanha:</label>
-                        <input type="text" id="candidate-slogan" class="input-mythic" placeholder="Ex: Ouro para todos!" maxlength="50">
+                        <img src="img/trojan.png" alt="Trojan" class="h-full object-contain relative z-10 drop-shadow-[0_0_10px_rgba(0,0,0,0.8)]">
                         
-                        <label class="block text-gray-400 text-xs font-bold uppercase mt-2">Estratégia de Farm:</label>
-                        <select id="candidate-farm" class="input-mythic cursor-pointer">
-                            <option value="Ferro">Foco em Ferro</option>
-                            <option value="Ouro">Foco em Ouro</option>
-                            <option value="Raid">Foco em Raid</option>
-                            <option value="XP">Foco em XP</option>
-                        </select>
-
-                        <button onclick="registerCandidateForElection()" class="w-full py-3 bg-purple-900 hover:bg-purple-700 border border-purple-500 text-white font-bold uppercase tracking-widest text-sm transition-all mt-2">
-                            Candidatar-se
-                        </button>
+                        <div class="absolute inset-0 border-b border-gold/30"></div>
                     </div>
-
-                    <!-- Painel de Identificação para Voto (Aparece quando votação ativa) -->
-                    <div id="voter-identity-box" class="hidden space-y-4">
-                        <div>
-                            <label class="block text-gray-400 text-xs font-bold mb-2 uppercase">Seu Identificador:</label>
-                            <input type="text" id="voter-name" class="input-mythic" placeholder="Seu Nick (Obrigatório)">
+                    <div class="p-6 text-center relative z-10">
+                        <h3 class="text-2xl font-heading text-white font-bold mb-1">Omega</h3>
+                        <div class="h-px w-12 bg-red-600 mx-auto mb-4"></div>
+                        <p class="text-sm text-gray-300 italic font-body">"Corações de Ferro, Almas de Aço"</p>
+                        <div class="mt-4 pt-4 border-t border-red-900/30">
+                            <span class="material-symbols-outlined text-red-500">swords</span>
                         </div>
-                        
-                        <div class="bg-stone-800/50 p-4 rounded border border-stone-600 text-center">
-                             <span class="block text-xs text-gray-400 uppercase mb-1">Seus Escolhidos</span>
-                             <span class="text-2xl font-bold text-gold" id="selected-count-display">0</span>
-                             <span class="text-sm text-gray-400">/ 4</span>
-                        </div>
-
-                        <button id="confirm-vote-btn" onclick="submitMultiVote()" class="w-full py-3 bg-emerald-800 hover:bg-emerald-600 border border-emerald-500 text-white font-bold uppercase tracking-widest text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed">
-                            Confirmar Votos
-                        </button>
-                        
-                        <p class="text-[10px] text-gray-500 text-center italic mt-2">* Selecione exatamente 4 candidatos para validar.</p>
-
-                        <!-- Admin Button Simulation -->
-                        <button onclick="revealResults()" class="w-full py-2 bg-stone-800 hover:bg-red-900 border border-stone-600 text-xs text-gray-400 hover:text-white font-bold uppercase tracking-widest transition-all mt-4">
-                            <span class="material-symbols-outlined align-middle text-sm mr-1">visibility</span> 
-                            Revelar Resultados (Admin)
-                        </button>
                     </div>
                 </div>
 
-                <!-- Coluna Direita: Lista de Candidatos / Votação -->
-                <div class="lg:col-span-2 bg-stone-800/50 border border-stone-700 p-6 rounded-lg min-h-[400px]">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-xl font-heading text-white" id="candidates-title">Candidatos ao Trono</h3>
-                        <span class="text-sm text-gray-400" id="candidate-count-display">0 Candidatos</span>
+                <div class="pantheom-card bg-obsidian border-2 border-stone-600 rounded-lg overflow-hidden relative shadow-[0_0_25px_rgba(100,100,100,0.2)] hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]">
+                    <div class="absolute top-0 right-0 p-2 z-20">
+                         <span class="bg-stone-700 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider border border-white/20">Clã Preto</span>
                     </div>
-
-                    <!-- Mensagem de Aclamação (Estado < 4) -->
-                    <div id="acclamation-msg" class="hidden mb-4 p-4 bg-emerald-900/30 border border-emerald-500/30 rounded text-emerald-200 text-sm text-center">
-                        <span class="material-symbols-outlined align-middle mr-2">verified</span>
-                        Poucos candidatos. Estes guerreiros assumirão o trono por Aclamação Automática se não houver oposição.
+                    <div class="h-64 bg-gradient-to-b from-stone-800/20 to-obsidian relative leader-img-container flex items-center justify-center">
+                        
+                        <img src="img/lk.png" alt="LK" class="h-full object-contain relative z-10 drop-shadow-[0_0_10px_rgba(0,0,0,0.8)]">
+                        
+                        <div class="absolute inset-0 border-b border-gold/30"></div>
                     </div>
-
-                    <!-- Lista -->
-                    <div id="candidates-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <!-- JS vai preencher aqui -->
-                        <div class="text-gray-500 italic col-span-2 text-center py-10">Nenhum candidato se apresentou ainda.</div>
+                    <div class="p-6 text-center relative z-10">
+                        <h3 class="text-2xl font-heading text-white font-bold mb-1">LK</h3>
+                        <div class="h-px w-12 bg-stone-500 mx-auto mb-4"></div>
+                        <p class="text-sm text-gray-300 italic font-body">"O ouro e eu somos um só"</p>
+                        <div class="mt-4 pt-4 border-t border-stone-800/50">
+                            <span class="material-symbols-outlined text-stone-400">payments</span>
+                        </div>
                     </div>
                 </div>
+
+                <div class="pantheom-card bg-obsidian border-2 border-pink-500 rounded-lg overflow-hidden relative shadow-[0_0_25px_rgba(236,72,153,0.2)] hover:shadow-[0_0_40px_rgba(236,72,153,0.5)]">
+                    <div class="absolute top-0 right-0 p-2 z-20">
+                         <span class="bg-pink-600 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Clã Rosa</span>
+                    </div>
+                    <div class="h-64 bg-gradient-to-b from-pink-900/20 to-obsidian relative leader-img-container flex items-center justify-center">
+                        
+                        <img src="img/soupyer.png" alt="Soupyer" class="h-full object-contain relative z-10 drop-shadow-[0_0_10px_rgba(0,0,0,0.8)]">
+                        
+                        <div class="absolute inset-0 border-b border-gold/30"></div>
+                    </div>
+                    <div class="p-6 text-center relative z-10">
+                        <h3 class="text-2xl font-heading text-white font-bold mb-1">Soupyer</h3>
+                        <div class="h-px w-12 bg-pink-500 mx-auto mb-4"></div>
+                        <p class="text-sm text-gray-300 italic font-body">"A vida é uma dádiva que eu preservarei"</p>
+                        <div class="mt-4 pt-4 border-t border-pink-900/30">
+                            <span class="material-symbols-outlined text-pink-400">favorite</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pantheom-card bg-obsidian border-2 border-blue-600 rounded-lg overflow-hidden relative shadow-[0_0_25px_rgba(37,99,235,0.2)] hover:shadow-[0_0_40px_rgba(37,99,235,0.5)]">
+                    <div class="absolute top-0 right-0 p-2 z-20">
+                         <span class="bg-blue-700 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Clã Azul</span>
+                    </div>
+                    <div class="h-64 bg-gradient-to-b from-blue-900/20 to-obsidian relative leader-img-container flex items-center justify-center">
+                        
+                        <img src="img/mattkk.png" alt="Mattkk" class="h-full object-contain relative z-10 drop-shadow-[0_0_10px_rgba(0,0,0,0.8)]">
+                        
+                        <div class="absolute inset-0 border-b border-gold/30"></div>
+                    </div>
+                    <div class="p-6 text-center relative z-10">
+                        <h3 class="text-2xl font-heading text-white font-bold mb-1">Mattkk</h3>
+                        <div class="h-px w-12 bg-blue-600 mx-auto mb-4"></div>
+                        <p class="text-sm text-gray-300 italic font-body">"O ferro ainda que frio, queima"</p>
+                        <div class="mt-4 pt-4 border-t border-blue-900/30">
+                            <span class="material-symbols-outlined text-blue-500">shield</span>
+                        </div>
+                    </div>
+                </div>
+
             </div>
          </div>
-    </section>
+</section>
 
     <section id="clas" class="py-20 px-4 relative bg-Greek-pattern fade-in-section">
         <div class="max-w-6xl mx-auto">
@@ -680,6 +719,18 @@
                     
                     <form id="clan-form" class="space-y-6" onsubmit="event.preventDefault(); registerClan();">
                         <div>
+                            <label class="block text-gray-400 text-sm font-bold mb-2 uppercase tracking-wider">Estandarte do Clã (Imagem):</label>
+                            <div class="relative border border-stone-600 rounded bg-black/40 p-4 text-center cursor-pointer hover:border-gold transition-colors group">
+                                <input type="file" id="clan-banner-file" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="previewBanner(event)">
+                                <div id="banner-preview-area" class="flex flex-col items-center justify-center">
+                                    <span class="material-symbols-outlined text-3xl text-stone-500 mb-2 group-hover:text-gold">image</span>
+                                    <p class="text-xs text-gray-400 group-hover:text-white">Clique para enviar (Max 2MB)</p>
+                                </div>
+                                <img id="banner-preview-img" class="hidden w-full h-32 object-cover rounded mt-2 border border-gold/30">
+                            </div>
+                        </div>
+                        
+                        <div>
                             <label class="block text-gray-400 text-sm font-bold mb-2 uppercase tracking-wider">Nome do Clã:</label>
                             <input type="text" id="clan-name" class="input-mythic" placeholder="Ex: Os Spartanos" required>
                         </div>
@@ -825,7 +876,7 @@
                         </h3>
                         <p class="text-emerald-200 font-bold text-sm mb-2">"Sem prova, sem crime."</p>
                         <ul class="text-sm text-gray-400 space-y-2">
-                            <li>📸 <strong>Provas Aceitas:</strong> Prints inteiros, Vídeos (Links no chat), Logs.</li>
+                            <li>📸 <strong>Provas Aceitas:</strong> Prints inteiros, Vídeos (No grupo), Logs.</li>
                             <li>🗣️ <strong>Testemunhas:</strong> Só valem se confirmadas por 2 pessoas de clãs diferentes ou prova visual.</li>
                             <li>📖 <strong>O Livro da Verdade:</strong> Acusação e Defesa devem escrever seus argumentos em um <em>Book & Quill</em> dentro do jogo.</li>
                         </ul>
@@ -853,21 +904,21 @@
                                 <span class="material-symbols-outlined text-gold">chair</span>
                                 <div>
                                     <p class="font-bold text-white">O Trono de Tebas</p>
-                                    <p>Elevado 5 blocos. Observa tudo de cima.</p>
+                                    <p> No centro dos tronos, Observa tudo de cima.</p>
                                 </div>
                             </div>
                             <div class="flex items-start gap-3">
                                 <span class="material-symbols-outlined text-stone-400">event_seat</span>
                                 <div>
                                     <p class="font-bold text-white">Tronos dos Juízes</p>
-                                    <p>Semicírculo abaixo de Tebas. 2 líderes de cada lado.</p>
+                                    <p> Ao lado do trono de Tebas. 2 líderes de cada lado.</p>
                                 </div>
                             </div>
                             <div class="flex items-start gap-3">
                                 <span class="material-symbols-outlined text-red-500">visibility</span>
                                 <div>
                                     <p class="font-bold text-white">O Palco do Réu</p>
-                                    <p>Um círculo central no nível mais baixo. O réu fica exposto, olhando para cima para seus julgadores.</p>
+                                    <p>Um pulpito central no nível mais baixo. O réu fica exposto, olhando para cima para seus julgadores.</p>
                                 </div>
                             </div>
                         </div>
@@ -878,8 +929,8 @@
                             <span class="material-symbols-outlined text-4xl text-orange-500 mb-2 group-hover:scale-110 transition-transform">local_fire_department</span>
                             <h4 class="font-bold text-white mb-1">Ritual do Voto</h4>
                             <p class="text-xs text-gray-400">
-                                Juízes lançam Lãs no fogo central.<br>
-                                <span class="text-emerald-400">Verde: Inocente</span> | <span class="text-red-500">Vermelha: Culpado</span>
+                                Juízes apresentam Lãs em suas mãos e então posicionam elas a sua frente .<br>
+                                <span class="text-emerald-400">Verde: Inocente/Sim </span> | <span class="text-red-500">Vermelha: Culpado/Não </span>
                             </p>
                         </div>
 
@@ -887,7 +938,7 @@
                             <span class="material-symbols-outlined text-4xl text-purple-500 mb-2 group-hover:scale-110 transition-transform">gavel</span>
                             <h4 class="font-bold text-white mb-1">O Tártaro (Punição)</h4>
                             <p class="text-xs text-gray-400">
-                                Sem local fixo. As punições são vontade dos juízes, executadas sob autorização de Tebas.
+                                Sem local fixo. As punições são vontade dos Líderes e de Tebas, executadas sob autorização de Tebas.
                             </p>
                         </div>
                     </div>
@@ -902,7 +953,7 @@
         </div>
     </section>
 
-    <section id="saga" class="py-20 bg-bedrock relative overflow-hidden fade-in-section">
+   <section id="saga" class="py-20 bg-bedrock relative overflow-hidden fade-in-section">
         <div class="max-w-5xl mx-auto px-4">
             <h2 class="text-4xl font-heading text-center text-white mb-8">V. A Saga dos Deuses</h2>
             
@@ -924,16 +975,14 @@
                     <div class="absolute top-0 -left-3 md:-left-3 w-6 h-6 rounded-full bg-mythicblue border-4 border-stone-800"></div>
                     <div class="bg-obsidian border border-blue-900 rounded-lg overflow-hidden shadow-lg shadow-blue-900/20 card-hover transition-all">
                         <div class="relative h-40">
-                             <!-- Imagem Local: elder-guardian.jpg -->
-                             <img src="elder-guardian.jpg" alt="Elder Guardian Titan" class="w-full h-full object-cover opacity-70">
+                             <img src="img/elden_guardian.jpg" alt="Polyphemus Titan" class="w-full h-full object-cover opacity-70">
                              <div class="absolute inset-0 bg-blue-900/30"></div>
                         </div>
-                        
                         <div class="p-6">
                             <h3 class="text-blue-400 font-heading text-xl mb-1">Capítulo 1: A Fúria de Poseidon</h3>
                             <div class="space-y-2 mt-4">
                                 <div class="flex items-center gap-2 text-sm text-gray-300">
-                                    <span class="material-symbols-outlined text-xs">water_drop</span> Alvo: Elder Guardian (Titan)
+                                    <span class="material-symbols-outlined text-xs">water_drop</span> Alvo: Polyphemus (Titan)
                                 </div>
                                 <div class="bg-blue-900/20 p-3 rounded border border-blue-900/50">
                                     <p class="text-xs text-blue-200 font-bold mb-1">RECOMPENSA DO CLÃ:</p>
@@ -952,16 +1001,14 @@
                     <div class="absolute top-0 -left-3 md:left-auto md:-right-3 w-6 h-6 rounded-full bg-red-900 border-4 border-stone-800"></div>
                     <div class="bg-obsidian border border-red-900 rounded-lg overflow-hidden shadow-lg shadow-red-900/20 card-hover transition-all">
                         <div class="relative h-40">
-                             <!-- Imagem Local: wither.jpg -->
-                             <img src="wither.jpg" alt="Wither Titan" class="w-full h-full object-cover opacity-70">
+                             <img src="img/wither_boss.jpg" alt="Cerberus Titan" class="w-full h-full object-cover opacity-70">
                              <div class="absolute inset-0 bg-red-900/30"></div>
                         </div>
-
                         <div class="p-6">
                             <h3 class="text-red-500 font-heading text-xl mb-1">Capítulo 2: O Chamado de Hades</h3>
                             <div class="space-y-2 mt-4">
                                 <div class="flex items-center gap-2 text-sm text-gray-300 md:justify-end">
-                                    <span class="material-symbols-outlined text-xs">skull</span> Alvo: Wither (Titan)
+                                    <span class="material-symbols-outlined text-xs">skull</span> Alvo: Cerberus (Titan)
                                 </div>
                                 <div class="bg-red-900/20 p-3 rounded border border-red-900/50 text-left">
                                     <p class="text-xs text-red-200 font-bold mb-1">RECOMPENSA DO CLÃ:</p>
@@ -980,16 +1027,14 @@
                     <div class="absolute top-0 -left-3 md:-left-3 w-6 h-6 rounded-full bg-white border-4 border-stone-800"></div>
                     <div class="bg-obsidian border border-gray-600 rounded-lg overflow-hidden shadow-lg shadow-white/10 card-hover transition-all">
                          <div class="relative h-40">
-                             <!-- Imagem Local: ender-dragon-lightning.jpg -->
-                             <img src="ender-dragon-lightning.jpg" alt="Ender Dragon Titan" class="w-full h-full object-cover opacity-70">
+                             <img src="img/ender_dragon.jpg" alt="Ender Dragon Titan" class="w-full h-full object-cover opacity-70">
                              <div class="absolute inset-0 bg-gray-900/30"></div>
                         </div>
-
                         <div class="p-6">
                             <h3 class="text-white font-heading text-xl mb-1">Capítulo 3: Os Céus de Zeus</h3>
                             <div class="space-y-2 mt-4">
                                 <div class="flex items-center gap-2 text-sm text-gray-300">
-                                    <span class="material-symbols-outlined text-xs">flight</span> Alvo: Ender Dragon (Titan)
+                                    <span class="material-symbols-outlined text-xs">flight</span> Alvo: Typhon (Titan)
                                 </div>
                                 <div class="bg-gray-800/50 p-3 rounded border border-gray-600">
                                     <p class="text-xs text-white font-bold mb-1">RECOMPENSA DO CLÃ:</p>
@@ -1008,16 +1053,14 @@
                     <div class="absolute top-0 -left-3 md:left-auto md:-right-3 w-6 h-6 rounded-full bg-teal-900 border-4 border-stone-800"></div>
                     <div class="bg-obsidian border border-teal-900 rounded-lg overflow-hidden shadow-lg shadow-teal-900/20 card-hover transition-all">
                          <div class="relative h-40">
-                             <!-- Imagem Local: warden-boss.jpg -->
-                             <img src="warden-boss.jpg" alt="Warden Titan" class="w-full h-full object-cover opacity-70">
+                             <img src="img/warden_boss.jpg" alt="Asterion Titan" class="w-full h-full object-cover opacity-70">
                              <div class="absolute inset-0 bg-teal-900/30"></div>
                         </div>
-                        
                         <div class="p-6">
                             <h3 class="text-teal-500 font-heading text-xl mb-1">Capítulo 4: O Tártaro</h3>
                             <div class="space-y-2 mt-4">
                                 <div class="flex items-center gap-2 text-sm text-gray-300 md:justify-end">
-                                    <span class="material-symbols-outlined text-xs">visibility</span> Alvo: Warden (Titan)
+                                    <span class="material-symbols-outlined text-xs">visibility</span> Alvo: Asterion (Titan)
                                 </div>
                                 <div class="bg-teal-900/20 p-3 rounded border border-teal-900/50 text-left">
                                     <p class="text-xs text-teal-200 font-bold mb-1">RECOMPENSA & RISCO:</p>
