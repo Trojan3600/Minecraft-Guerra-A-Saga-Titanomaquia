@@ -705,8 +705,8 @@
             registrationLocked: false 
         };
 
-        const clanThemes = {
-            "LEGADO": { symbol: "Ω", desc: "\"Nascidos no fogo, forjados no mito.\" A imortalidade não é dada, é conquistada pela espada.", leader: "ARCONTE", coleader: "EXECUTOR", member: "ESPARTANOS" },
+        const const clanThemes = {
+            "LEGADO": { symbol: "Ω", desc: "\"Nascidos no fogo, forjados no mito.\" A imortalidade não é dada, é conquistada pela espada. Lutem para serem eternos.", leader: "ARCONTE", coleader: "EXECUTOR", member: "ESPARTANOS" },
             "ONISCIÊNCIA": { symbol: "☥", desc: "\"Os olhos que veem além do véu.\" Enquanto o mundo tropeça no escuro, vocês caminham guiados pela certeza divina.", leader: "ORÁCULO", coleader: "ARAUTO", member: "ASCENDENTES" },
             "IMPÉRIO": { symbol: "♛", desc: "\"A ordem imposta pelo ferro.\" A arquitetura da conquista perfeita. Onde a águia pousa, o joelho se dobra.", leader: "IMPERADOR", coleader: "LEGATUS", member: "PRETORIANOS" },
             "MILITAR": { symbol: "⚔", desc: "\"A tempestade de aço.\" Sem política, apenas estratégia. Vocês são a brutal e honesta realidade da linha de frente.", leader: "SOBERANO", coleader: "MARECHAL", member: "VANGUARDA" },
@@ -721,6 +721,23 @@
             "LAS NOCHES": { symbol: "🌒", desc: "\"Não há nada além do medo para aqueles que não conseguem evoluir.\" Quebrem as barreiras da existência e governem o vazio.", leader: "TRANSCENDENTAL", coleader: "GOVERNANTE", member: "ESPADAS" }
         };
 
+        const minecraftGlassColors = [
+            { name: "Branco", hex: "#FFFFFF" },
+            { name: "Vermelho", hex: "#B02E26" },
+            { name: "Laranja", hex: "#F9801D" },
+            { name: "Rosa", hex: "#F38BAA" },
+            { name: "Amarelo", hex: "#FED83D" },
+            { name: "Verde-limão", hex: "#80C71F" },
+            { name: "Verde", hex: "#5E7C16" },
+            { name: "Ciano", hex: "#169C9C" },
+            { name: "Azul", hex: "#3C44AA" },
+            { name: "Magenta", hex: "#C74EBD" },
+            { name: "Roxo", hex: "#8932B8" },
+            { name: "Marrom", hex: "#835432" },
+            { name: "Cinza", hex: "#474F52" },
+            { name: "Cinza-claro", hex: "#9D9D97" },
+            { name: "Preto", hex: "#1D1D21" }
+        ];
         const glassColors = [
             {name: 'Branco', hex: '#FFFFFF'}, {name: 'Cinza Claro', hex: '#999999'}, {name: 'Cinza', hex: '#4c4c4c'},
             {name: 'Preto', hex: '#191919'}, {name: 'Marrom', hex: '#664c33'}, {name: 'Vermelho', hex: '#993333'},
@@ -1022,40 +1039,66 @@
             setTimeout(() => { el.remove(); }, 20000);
         }
 
+      // --- 5. War Mode Toggle ---
         let isPurgeMode = false;
         function toggleWarMode() {
-             isPurgeMode = !isPurgeMode;
-             const btn = document.getElementById('mode-toggle');
-             const circle = document.getElementById('toggle-circle');
-             const icon = document.getElementById('toggle-icon');
-             const bg = document.getElementById('rules-bg');
-             const container = document.getElementById('rules-container');
-             const title = document.getElementById('rules-title');
-             const pvpText = document.getElementById('pvp-text');
-             const baseText = document.getElementById('base-text');
-             const statusText = document.getElementById('status-text');
+            isPurgeMode = !isPurgeMode;
+            const btn = document.getElementById('mode-toggle');
+            const circle = document.getElementById('toggle-circle');
+            const icon = document.getElementById('toggle-icon');
+            const bg = document.getElementById('rules-bg');
+            const container = document.getElementById('rules-container');
+            const title = document.getElementById('rules-title');
+            const pvpText = document.getElementById('pvp-text');
+            const baseText = document.getElementById('base-text');
+            const statusText = document.getElementById('status-text');
+            const pvpIcon = document.getElementById('pvp-icon');
+            const baseIcon = document.getElementById('base-icon');
 
-             if (isPurgeMode) {
-                 btn.classList.replace('bg-gray-700', 'bg-red-900');
-                 circle.classList.add('translate-x-10');
-                 icon.innerText = 'skull'; icon.classList.add('text-red-600'); icon.classList.remove('text-black');
-                 if(bg) bg.classList.replace('bg-emerald-900', 'bg-red-900');
-                 if(container) container.classList.replace('border-stone-600', 'border-red-600');
-                 if(title) { title.innerText = "O Expurgo (Sáb/Dom/Feriados)"; title.classList.replace('text-emerald-400', 'text-red-500'); }
-                 if(pvpText) pvpText.innerHTML = "<span class='text-red-400 font-bold'>LIBERADO 24H.</span> O mapa inteiro é uma arena.";
-                 if(baseText) baseText.innerHTML = "SAQUE PERMITIDO (Baús/Fornalhas). <br><span class='text-xs text-red-400'>Lei da Destruição: Quebre o necessário para entrar. Proibido demolir por maldade.</span>";
-                 if(statusText) { statusText.innerText = "🩸 CAOS E SAQUE"; statusText.classList.replace('text-emerald-500', 'text-red-500'); }
-             } else {
-                 btn.classList.replace('bg-red-900', 'bg-gray-700');
-                 circle.classList.remove('translate-x-10');
-                 icon.innerText = 'radio_button_unchecked'; icon.classList.remove('text-red-600'); icon.classList.add('text-black');
-                 if(bg) bg.classList.replace('bg-red-900', 'bg-emerald-900');
-                 if(container) container.classList.replace('border-red-600', 'border-stone-600');
-                 if(title) { title.innerText = "Segunda a Sexta"; title.classList.replace('text-red-500', 'text-emerald-400'); }
-                 if(pvpText) pvpText.innerText = "Permitido apenas durante a NOITE (no jogo). De dia, só duelos aceitos.";
-                 if(baseText) baseText.innerText = "INTOCÁVEIS. Proibido invadir terreno inimigo.";
-                 if(statusText) { statusText.innerText = "🕊️ CONSTRUÇÃO E DIPLOMACIA"; statusText.classList.replace('text-red-500', 'text-emerald-500'); }
-             }
+            if (isPurgeMode) {
+                btn.classList.replace('bg-gray-700', 'bg-red-900');
+                circle.classList.add('translate-x-10');
+                icon.innerText = 'skull';
+                icon.classList.add('text-red-600');
+                icon.classList.remove('text-black');
+                if(bg) bg.classList.replace('bg-emerald-900', 'bg-red-900');
+                if(container) container.classList.replace('border-stone-600', 'border-red-600');
+                
+                if(title) {
+                    title.innerText = "O Expurgo (Sáb/Dom/Feriados)";
+                    title.classList.replace('text-emerald-400', 'text-red-500');
+                }
+                if(pvpText) pvpText.innerHTML = "<span class='text-red-400 font-bold'>LIBERADO 24H.</span> O mapa inteiro é uma arena.";
+                if(baseText) baseText.innerHTML = "SAQUE PERMITIDO (Baús/Fornalhas). <br><span class='text-xs text-red-400'>Lei da Destruição: Quebre o necessário para entrar. Proibido demolir por maldade.</span>";
+                if(baseIcon) baseIcon.innerText = 'meeting_room';
+                if(baseIcon) baseIcon.classList.add('text-red-500');
+                if(statusText) {
+                    statusText.innerText = "🩸 CAOS E SAQUE";
+                    statusText.classList.replace('text-emerald-500', 'text-red-500');
+                }
+            } else {
+                btn.classList.replace('bg-red-900', 'bg-gray-700');
+                circle.classList.remove('translate-x-10');
+                icon.innerText = 'radio_button_unchecked';
+                icon.classList.remove('text-red-600');
+                icon.classList.add('text-black');
+                if(bg) bg.classList.replace('bg-red-900', 'bg-emerald-900');
+                if(container) container.classList.replace('border-red-600', 'border-stone-600');
+                
+                if(title) {
+                    title.innerText = "Segunda a Sexta";
+                    title.classList.replace('text-red-500', 'text-emerald-400');
+                }
+                if(pvpText) pvpText.innerText = "Permitido apenas durante a NOITE (no jogo). De dia, só duelos aceitos.";
+                if(pvpIcon) pvpIcon.classList.remove('text-red-500');
+                if(baseText) baseText.innerText = "INTOCÁVEIS. Proibido invadir terreno inimigo.";
+                if(baseIcon) baseIcon.innerText = 'fort';
+                if(baseIcon) baseIcon.classList.remove('text-red-500');
+                if(statusText) {
+                    statusText.innerText = "🕊️ CONSTRUÇÃO E DIPLOMACIA";
+                    statusText.classList.replace('text-red-500', 'text-emerald-500');
+                }
+            }
         }
 
         // --- 6. INICIALIZAÇÃO FINAL ---
