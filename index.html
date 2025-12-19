@@ -6,7 +6,6 @@
     <title>Minecraft Guerra: A Titanomaquia</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Metamorphous&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
@@ -17,20 +16,23 @@
             theme: {
                 extend: {
                     colors: {
+                        // Você pode alterar os códigos Hex aqui para mudar as cores globais
                         obsidian: '#1a1a1a',
                         bedrock: '#0a0a0a',
-                        gold: '#FFD700',
+                        gold: '#FFD700', // Cor Dourada Principal
                         golddim: '#B8860B',
                         mythicred: '#8B0000',
                         mythicblue: '#191970',
                         diamond: '#b9f2ff',
-                        emerald: '#50c878'
+                        emerald: '#50c878',
+                        chocolate: '#D2691E'
                     },
                     fontFamily: {
                         heading: ['Cinzel', 'serif'],
                         subheading: ['Metamorphous', 'serif'],
                         body: ['Open Sans', 'sans-serif'],
                     },
+                    // ... (Animações e configurações avançadas mantidas ocultas para limpeza)
                     backgroundImage: {
                         'Greek-pattern': "url('https://www.transparenttextures.com/patterns/black-scales.png')",
                     },
@@ -39,6 +41,7 @@
                         'float': 'float 3s ease-in-out infinite',
                         'glow': 'glow 2s ease-in-out infinite alternate',
                         'shine': 'shine 1s linear infinite',
+                        'float-up': 'floatUp 15s linear forwards',
                     },
                     keyframes: {
                         float: {
@@ -48,66 +51,28 @@
                         glow: {
                             'from': { textShadow: '0 0 10px #FFD700, 0 0 20px #B8860B' },
                             'to': { textShadow: '0 0 20px #FFD700, 0 0 30px #FFD700, 0 0 40px #B8860B' }
+                        },
+                        floatUp: {
+                            '0%': { bottom: '-10%', opacity: '0', transform: 'scale(0.5)' },
+                            '10%': { opacity: '0.6' },
+                            '90%': { opacity: '0.6' },
+                            '100%': { bottom: '110%', opacity: '0', transform: 'scale(1)' }
                         }
                     }
                 }
             }
         }
     </script>
+    
     <style>
-        /* Custom Scrollbar */
+        /* Barra de rolagem personalizada */
         ::-webkit-scrollbar { width: 10px; }
         ::-webkit-scrollbar-track { background: #0a0a0a; }
         ::-webkit-scrollbar-thumb { background: #B8860B; border-radius: 5px; }
         
-        /* Animations */
-        .fade-in-section {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-            will-change: opacity, visibility;
-        }
-        .fade-in-section.is-visible { opacity: 1; transform: none; }
+        .gold-glow-text { text-shadow: 0 0 15px rgba(255, 215, 0, 0.6); }
 
-        .card-hover:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5), 0 0 15px rgba(184, 134, 11, 0.3);
-        }
-        
-        .gold-glow-text {
-            text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
-        }
-
-        /* Countdown specific styles */
-        .countdown-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0, 0, 0, 0.6);
-            border: 2px solid #B8860B;
-            border-radius: 8px;
-            padding: 1rem;
-            min-width: 80px;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.15);
-        }
-        .countdown-number {
-            font-family: 'Cinzel', serif;
-            font-size: 2.5rem;
-            font-weight: 900;
-            color: #FFD700;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-        }
-        .countdown-label {
-            font-family: 'Open Sans', sans-serif;
-            font-size: 0.75rem;
-            color: #B8860B;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-top: 0.25rem;
-        }
-
-        /* Form styling */
+        /* Estilos dos Inputs e Formulários */
         .input-mythic {
             background-color: rgba(0, 0, 0, 0.4);
             border: 1px solid #444;
@@ -123,30 +88,8 @@
             outline: none;
             box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
         }
-        .input-mythic.error {
-            border-color: #ef4444;
-            box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
-        }
-        select.input-mythic option {
-            background-color: #1a1a1a;
-            color: #e5e7eb;
-        }
-        input[type="color"] {
-            height: 50px;
-            padding: 0.2rem;
-            cursor: pointer;
-        }
         
-        .farm-taken {
-            opacity: 0.5;
-            cursor: not-allowed !important;
-            filter: grayscale(80%);
-        }
-        .farm-taken .check-icon {
-            display: none !important;
-        }
-
-        /* Minecraft Glass Picker Styles */
+        /* Estilos para o Seletor de Vidros (Cores) */
         .glass-picker-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -161,41 +104,11 @@
             transition: transform 0.1s, border-color 0.1s;
             background-image: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 20%, rgba(255,255,255,0) 80%, rgba(255,255,255,0.1) 100%);
         }
-        .glass-option:hover {
-            transform: scale(1.1);
-            z-index: 10;
-            border-color: rgba(255, 255, 255, 0.5);
-        }
-        .glass-option.selected {
-            border: 3px solid #FFD700; /* Gold selection */
-            box-shadow: 0 0 10px #FFD700;
-            transform: scale(1.1);
-            z-index: 10;
-        }
-        .glass-option.disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-            filter: grayscale(100%);
-            transform: none;
-            border-color: #444;
-        }
-        .glass-shine {
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 4px;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.6);
-        }
-        .glass-shine-2 {
-            position: absolute;
-            bottom: 2px;
-            right: 2px;
-            width: 2px;
-            height: 2px;
-            background: rgba(255, 255, 255, 0.4);
-        }
-         /* Estilos Específicos do Card dos Líderes (Pantheom) */
+        .glass-option:hover { transform: scale(1.1); z-index: 10; border-color: rgba(255, 255, 255, 0.5); }
+        .glass-option.selected { border: 3px solid #FFD700; box-shadow: 0 0 10px #FFD700; transform: scale(1.1); z-index: 10; }
+        .glass-option.disabled { opacity: 0.3; cursor: not-allowed; filter: grayscale(100%); transform: none; border-color: #444; }
+        
+        /* Estilos Específicos do Card dos Líderes (Pantheom) */
         .pantheom-card { transition: all 0.4s ease; }
         .pantheom-card:hover { transform: translateY(-10px) scale(1.02); }
         .leader-img-container {
