@@ -375,6 +375,7 @@
         </div>
     </section>
 
+  <!-- SEÇÃO: REGISTRO DE GUERRA (Permanece a mesma) -->
     <section id="registro" class="py-20 bg-stone-900 border-b border-stone-800 relative fade-in-section">
         <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/black-scales.png')] opacity-20"></div>
         <div class="max-w-7xl mx-auto px-4 relative z-10">
@@ -385,15 +386,8 @@
                 <p class="mt-4 text-gray-400">Inscreva seu Clã no livro da história. Apenas Líderes.</p>
             </div>
 
-            <div id="registration-locked-msg" class="text-center py-12 border-2 border-stone-700 bg-black/50 rounded-lg hidden">
-                <span class="material-symbols-outlined text-6xl text-stone-500 mb-4">lock</span>
-                <h3 class="text-2xl font-heading text-stone-400">Registro Bloqueado</h3>
-                <p class="text-gray-500 mt-2">O registro de clãs estará disponível somente após o fim da votação ou Decreto Real.</p>
-                <button onclick="revealResults()" class="mt-4 px-4 py-2 border border-stone-600 text-stone-500 hover:text-white hover:border-white text-xs uppercase font-bold rounded transition-all">Liberar Registro (Admin)</button>
-            </div>
-
-            <div id="registration-form-container" class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- FORM -->
                 <div class="bg-obsidian border-2 border-gold/50 p-8 rounded-lg shadow-[0_0_20px_rgba(0,0,0,0.5)] relative">
                     <h3 class="text-2xl font-heading text-gold mb-6 flex items-center gap-2">
                         <span class="material-symbols-outlined">swords</span> Novo Registro
@@ -401,20 +395,6 @@
                     <p class="text-xs text-gray-500 mb-6 italic">* Apenas o Líder deve preencher este formulário.</p>
                     
                     <form id="clan-form" class="space-y-6" onsubmit="event.preventDefault(); registerClan();">
-                        
-                        <div>
-                            <label class="block text-gray-400 text-sm font-bold mb-2 uppercase tracking-wider">Estandarte do Clã (Imagem):</label>
-                            <div class="relative border border-stone-600 rounded bg-black/40 p-4 text-center cursor-pointer hover:border-gold transition-colors group">
-                                <input type="file" id="clan-banner-file" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="previewBanner(event)">
-                                
-                                <div id="banner-preview-area" class="flex flex-col items-center justify-center">
-                                    <span class="material-symbols-outlined text-3xl text-stone-500 mb-2 group-hover:text-gold">image</span>
-                                    <p class="text-xs text-gray-400 group-hover:text-white">Clique para enviar (Max 2MB)</p>
-                                </div>
-                                <img id="banner-preview-img" class="hidden w-full h-32 object-cover rounded mt-2 border border-gold/30">
-                            </div>
-                        </div>
-
                         <div>
                             <label class="block text-gray-400 text-sm font-bold mb-2 uppercase tracking-wider">Nome do Clã:</label>
                             <input type="text" id="clan-name" class="input-mythic" placeholder="Ex: Os Spartanos" required>
@@ -429,7 +409,8 @@
                             <label class="block text-gray-400 text-sm font-bold mb-2 uppercase tracking-wider">Tema do Clã:</label>
                             <select id="clan-theme" class="input-mythic cursor-pointer" onchange="updateThemeInfo()">
                                 <option value="" disabled selected>Escolha sua Hierarquia...</option>
-                                </select>
+                                <!-- JS will populate options -->
+                            </select>
                             <div id="theme-info" class="mt-2 p-3 bg-black/40 rounded border border-stone-700 text-sm hidden transition-all">
                                 <p id="theme-desc" class="text-gray-300 italic mb-2"></p>
                                 <div class="grid grid-cols-3 gap-2 text-xs text-center">
@@ -442,9 +423,10 @@
 
                         <div>
                             <label class="block text-gray-400 text-sm font-bold mb-2 uppercase tracking-wider">Cor da Equipe:</label>
-                            <input type="hidden" id="clan-color" value="#FFFFFF"> 
+                            <input type="hidden" id="clan-color" value="#FFFFFF"> <!-- Default White -->
                             <div class="glass-picker-grid" id="glass-picker">
-                                </div>
+                                <!-- JS will populate glass blocks -->
+                            </div>
                             <div class="mt-4 flex items-center justify-between">
                                 <span class="text-xs text-gray-500" id="selected-color-name">Selecionado: Branco</span>
                                 <button type="button" onclick="copyColorCode()" class="px-4 py-2 bg-stone-800 border border-gold/30 text-gold rounded hover:bg-stone-700 transition-colors text-xs font-bold flex items-center gap-2 group relative">
@@ -486,8 +468,7 @@
                             Registrar Clã
                         </button>
                     </form>
-                    
-                    <div id="limit-reached-msg" class="absolute inset-0 bg-obsidian/90 backdrop-blur-sm flex items-center justify-center text-center p-8 hidden">
+                     <div id="limit-reached-msg" class="absolute inset-0 bg-obsidian/90 backdrop-blur-sm flex items-center justify-center text-center p-8 hidden">
                         <div>
                             <span class="material-symbols-outlined text-6xl text-red-500 mb-4">block</span>
                             <h3 class="text-2xl font-heading text-red-500 mb-2">Limite de Clãs Atingido</h3>
@@ -496,22 +477,18 @@
                     </div>
                 </div>
 
-                <div class="bg-bedrock/50 border border-stone-700 p-8 rounded-lg overflow-hidden relative min-h-[500px] flex flex-col">
+                <!-- DISPLAY / CLÃS REGISTRADOS -->
+                <div class="bg-bedrock/50 border border-stone-700 p-8 rounded-lg overflow-hidden relative min-h-[500px]">
                     <h3 class="text-2xl font-heading text-white mb-6 flex items-center gap-2">
                         <span class="material-symbols-outlined">flag</span> Clãs Registrados
                         <span id="clan-count" class="text-sm text-gray-400 ml-auto font-body">(0/4)</span>
                     </h3>
                     
-                    <div id="clan-list" class="space-y-6 overflow-y-auto max-h-[600px] pr-2 flex-grow">
+                    <div id="clan-list" class="space-y-6 overflow-y-auto max-h-[600px] pr-2">
+                        <!-- Clãs serão inseridos aqui via JS -->
                         <div class="text-center text-gray-500 mt-20 italic" id="empty-state">
                             Nenhum clã registrado ainda.<br>Seja o primeiro a marcar território.
                         </div>
-                    </div>
-
-                    <div class="mt-4 pt-4 border-t border-white/5 text-center">
-                        <p class="text-[10px] text-gray-600 uppercase tracking-widest hover:text-red-500 transition-colors cursor-help" title="Use esta senha ao clicar na lixeira para deletar um clã">
-                            <span class="material-symbols-outlined text-[10px] align-middle">key</span> Senha de Admin: <span class="font-bold">TEBAS</span>
-                        </p>
                     </div>
                 </div>
             </div>
