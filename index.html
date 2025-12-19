@@ -583,7 +583,7 @@
                 <div id="opt-xp" class="bg-obsidian border border-stone-600 hover:border-gold p-6 rounded-lg cursor-pointer transition-all group relative overflow-hidden flex flex-col h-full" onclick="selectFarm('xp')">
                     <div class="absolute inset-0 z-0">
                         <!-- Imagem Local: farm-de-xp.jpg -->
-                        <img src="xp_farm.jpg" alt="XP Farm" class="w-full h-full object-cover opacity-30 group-hover:opacity-50 transition-opacity duration-500">
+                        <img src="xp_farm.jpg" alt="Enderman XP Farm" class="w-full h-full object-cover opacity-30 group-hover:opacity-50 transition-opacity duration-500">
                         <div class="absolute inset-0 bg-gradient-to-t from-obsidian via-transparent to-transparent"></div>
                     </div>
                     
@@ -940,7 +940,7 @@
                     <div class="absolute top-0 -left-3 md:-left-3 w-6 h-6 rounded-full bg-white border-4 border-stone-800"></div>
                     <div class="bg-obsidian border border-gray-600 rounded-lg overflow-hidden shadow-lg shadow-white/10 card-hover transition-all">
                          <div class="relative h-40">
-                             <img src="typhom.jpg" alt="Ender Dragon Titan" class="w-full h-full object-cover opacity-70">
+                             <img src="dragon.jpg" alt="Ender Dragon Titan" class="w-full h-full object-cover opacity-70">
                              <div class="absolute inset-0 bg-gray-900/30"></div>
                         </div>
                         <div class="p-6">
@@ -1352,14 +1352,36 @@
                 </div>
                 <div class="p-4 relative">
                     <p class="text-xs text-gray-400 italic mb-3 border-l-2 pl-2" style="border-color: ${color}">"${motto}"</p>
-                    <div class="space-y-1 text-sm text-gray-300 border-t border-stone-700 pt-2">
-                        <div class="flex justify-between">
-                            <span class="text-gray-500">${theme.leader}</span>
-                            <span class="font-bold text-white">${leader}</span>
+                    
+                    <div class="space-y-3 text-sm text-gray-300 border-t border-stone-700 pt-3">
+                        <!-- Líder com Destaque -->
+                        <div class="flex flex-col">
+                            <span class="text-[10px] uppercase tracking-widest text-gold font-bold mb-0.5 flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[10px]">crown</span> ${theme.leader}
+                            </span>
+                            <span class="font-heading font-black text-xl text-white tracking-wide" style="text-shadow: 0 0 10px ${color}40">${leader}</span>
                         </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-500">Economia</span>
-                            <span class="text-gold">${economyName}</span>
+
+                        <!-- Co-Líder -->
+                        <div class="flex flex-col">
+                            <span class="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-0.5">${theme.coleader}</span>
+                            <span class="font-bold text-gray-200 ml-2 border-l border-gray-600 pl-2">${coleader || '<span class="text-gray-600 italic">Vago</span>'}</span>
+                        </div>
+
+                        <!-- Membros -->
+                        <div class="flex flex-col">
+                            <span class="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-0.5">${theme.member}</span>
+                            <span class="text-xs text-gray-400 leading-relaxed ml-2 border-l border-gray-600 pl-2 block break-words">
+                                ${membersStr ? membersStr.replace(/\n/g, ', ') : '<span class="text-gray-600 italic">Nenhum membro</span>'}
+                            </span>
+                        </div>
+
+                        <!-- Economia -->
+                        <div class="flex justify-between items-center border-t border-stone-800 pt-2 mt-2">
+                            <span class="text-xs text-gray-500 uppercase tracking-widest">Especialidade</span>
+                            <span class="text-gold font-bold flex items-center gap-1 text-xs bg-gold/10 px-2 py-1 rounded border border-gold/20">
+                                <span class="material-symbols-outlined text-sm">savings</span> ${economyName}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -1399,7 +1421,7 @@
                  {id:'iron', name:'Caminho do Aço', desc:'Ferro Infinito', icon:'shield', img:'ironfarm.jpg', type:'Ferro'},
                  {id:'gold', name:'Caminho da Riqueza', desc:'Ouro Infinito', icon:'payments', img:'goldfarm.jpg', type:'Ouro'},
                  {id:'raid', name:'Caminho da Vida', desc:'Totens Infinitos', icon:'local_fire_department', img:'raidfarm.jpg', type:'Raid'},
-                 {id:'xp', name:'Caminho do Encanto', desc:'XP Massivo', icon:'bolt', img:'xpfarm.jpg', type:'XP'}
+                 {id:'xp', name:'Caminho do Encanto', desc:'XP Massivo', icon:'bolt', img:'xp_farm.jpg', type:'XP'}
              ];
              grid.innerHTML = opts.map(o => {
                 const taken = state.takenEconomies.has(o.type);
