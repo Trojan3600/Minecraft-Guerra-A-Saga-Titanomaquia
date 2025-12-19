@@ -459,7 +459,7 @@
                     </div>
                     <div class="h-64 bg-gradient-to-b from-stone-800/20 to-obsidian relative leader-img-container flex items-center justify-center">
                         
-                        <img src="img/lk.png" alt="LK" class="h-full object-contain relative z-10 drop-shadow-[0_0_10px_rgba(0,0,0,0.8)]">
+                        <img src="img/tiolk.png" alt="LK" class="h-full object-contain relative z-10 drop-shadow-[0_0_10px_rgba(0,0,0,0.8)]">
                         
                         <div class="absolute inset-0 border-b border-gold/30"></div>
                     </div>
@@ -1091,6 +1091,48 @@
         </div>
     </section>
 
+     <section id="leis" class="py-20 bg-stone-900 transition-colors duration-700 fade-in-section">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="text-4xl font-heading text-white mb-8">VI. Códigos de Guerra</h2>
+            <p class="text-gray-400 text-sm mb-8">A desobediência às regras resultará na ira imediata do Supremo Tribunal dos Quatro.</p>
+            
+            <div class="flex justify-center items-center gap-6 mb-12">
+                <span id="peace-label" class="text-emerald-400 font-bold transition-opacity">DIAS DE PAZ</span>
+                <button id="mode-toggle" onclick="toggleWarMode()" class="relative w-20 h-10 bg-gray-700 rounded-full border-2 border-gray-600 focus:outline-none shadow-inner transition-colors duration-500">
+                    <div id="toggle-circle" class="absolute top-1 left-1 w-7 h-7 bg-white rounded-full shadow-lg transform transition-transform duration-500 flex items-center justify-center">
+                        <span id="toggle-icon" class="material-symbols-outlined text-xs text-black">radio_button_unchecked</span>
+                    </div>
+                </button>
+                <span id="purge-label" class="text-red-500 font-bold transition-opacity opacity-30">O EXPURGO</span>
+            </div>
+
+            <div id="rules-container" class="bg-obsidian border border-stone-600 p-8 rounded-lg min-h-[300px] transition-all duration-500 relative overflow-hidden">
+                <div id="rules-bg" class="absolute inset-0 opacity-10 transition-colors duration-500 bg-emerald-900"></div>
+                <div class="relative z-10">
+                    <h3 id="rules-title" class="text-2xl font-heading text-emerald-400 mb-6 transition-colors duration-300">Segunda a Sexta</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
+                        <div>
+                            <h4 class="font-bold text-white mb-2 flex items-center gap-2">
+                                <span id="pvp-icon" class="material-symbols-outlined">swords</span> PvP
+                            </h4>
+                            <p id="pvp-text" class="text-gray-400 text-sm">Permitido apenas durante a NOITE (no jogo). De dia, só duelos aceitos.</p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white mb-2 flex items-center gap-2">
+                                <span id="base-icon" class="material-symbols-outlined">fort</span> Bases
+                            </h4>
+                            <p id="base-text" class="text-gray-400 text-sm">INTOCÁVEIS. Proibido invadir terreno inimigo.</p>
+                        </div>
+                    </div>
+                    <div class="mt-8 pt-6 border-t border-stone-700">
+                        <p class="text-xs text-gray-500 uppercase tracking-widest">Estado Atual</p>
+                        <p id="status-text" class="text-lg font-bold text-emerald-500 mt-1">🕊️ CONSTRUÇÃO E DIPLOMACIA</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section id="tesouro" class="py-20 relative overflow-hidden bg-bedrock fade-in-section">
         <div class="absolute inset-0 bg-gold/5"></div>
         <div class="max-w-6xl mx-auto px-4 text-center relative z-10">
@@ -1237,10 +1279,6 @@
             takenColors: new Set(),
             CLAN_LIMIT: 4,
             MEMBER_LIMIT: 6,
-            candidates: [],
-            votedUsers: new Set(),
-            currentSelections: new Set(), // For approval voting
-            resultsRevealed: false
         };
 
         const clanThemes = {
@@ -1276,269 +1314,6 @@
             { name: "Cinza-claro", hex: "#9D9D97" },
             { name: "Preto", hex: "#1D1D21" }
         ];
-
-        // --- ELECTION LOGIC ---
-
-        function registerCandidateForElection() {
-            const name = document.getElementById('new-candidate-name').value.trim();
-            const slogan = document.getElementById('candidate-slogan').value.trim();
-            const strategy = document.getElementById('candidate-farm').value;
-            
-            if (!name) {
-                alert("Por favor, insira seu Nick.");
-                return;
-            }
-            if(!slogan) {
-                alert("Um líder precisa de um lema! Escreva uma frase de campanha.");
-                return;
-            }
-            
-            if(state.candidates.some(c => c.name.toLowerCase() === name.toLowerCase())) {
-                alert("Este candidato já está inscrito.");
-                return;
-            }
-
-            state.candidates.push({ 
-                name: name, 
-                slogan: slogan,
-                strategy: strategy,
-                votes: 0,
-                timestamp: Date.now() // For tie-breaking antiquity
-            });
-            
-            document.getElementById('new-candidate-name').value = '';
-            document.getElementById('candidate-slogan').value = '';
-            
-            renderElectionUI();
-        }
-
-        function toggleCandidateSelection(index) {
-            // Toggle logic
-            if(state.currentSelections.has(index)) {
-                state.currentSelections.delete(index);
-            } else {
-                if(state.currentSelections.size >= 4) {
-                    alert("Você deve selecionar exatamente 4 candidatos.");
-                    return;
-                }
-                state.currentSelections.add(index);
-            }
-            
-            // Update UI directly for responsiveness
-            renderElectionUI();
-        }
-
-        function submitMultiVote() {
-            const voterInput = document.getElementById('voter-name');
-            const voterName = voterInput.value.trim();
-
-            if (!voterName) {
-                alert("Por favor, identifique-se no campo 'Seu Identificador' para computar seu voto.");
-                voterInput.focus();
-                return;
-            }
-            
-            if (state.currentSelections.size !== 4) {
-                alert("Você deve selecionar EXATAMENTE 4 candidatos para validar seu voto.");
-                return;
-            }
-
-            // Check self-voting against all selected candidates
-            let isSelfVoting = false;
-            state.currentSelections.forEach(index => {
-                 if (state.candidates[index].name.toLowerCase() === voterName.toLowerCase()) {
-                     isSelfVoting = true;
-                 }
-            });
-
-            if (isSelfVoting) {
-                alert("Honra, guerreiro! Você não pode votar em si mesmo. Remova sua seleção.");
-                return;
-            }
-
-            if(state.votedUsers.has(voterName.toLowerCase())) {
-                 alert("Você já votou nesta sessão.");
-                 return;
-            }
-
-            // Commit votes
-            state.currentSelections.forEach(index => {
-                state.candidates[index].votes++;
-            });
-            
-            state.votedUsers.add(voterName.toLowerCase());
-            state.currentSelections.clear(); // Reset selection
-            
-            renderElectionUI();
-            alert(`Votos computados com sucesso! A contagem é secreta.`);
-        }
-        
-        function revealResults() {
-             if(state.candidates.length < 1) {
-                 alert("Não há candidatos suficientes para revelar.");
-                 return;
-             }
-             
-             if(!confirm("Tem certeza que deseja encerrar a votação e revelar os Reis? Esta ação é irreversível.")) return;
-             
-             state.resultsRevealed = true;
-             renderElectionUI();
-        }
-
-        function renderElectionUI() {
-            const listEl = document.getElementById('candidates-list');
-            const countEl = document.getElementById('candidate-count-display');
-            const statusText = document.getElementById('election-status-text');
-            const acclamationMsg = document.getElementById('acclamation-msg');
-            const voterBox = document.getElementById('voter-identity-box');
-            const candidateFormBox = document.getElementById('candidate-form-box');
-            const titleEl = document.getElementById('candidates-title');
-            const selectedCountDisplay = document.getElementById('selected-count-display');
-            const confirmBtn = document.getElementById('confirm-vote-btn');
-
-            const totalCandidates = state.candidates.length;
-            
-            // Update Selection Counter UI
-            if(selectedCountDisplay) {
-                selectedCountDisplay.innerText = state.currentSelections.size;
-                if(state.currentSelections.size === 4) {
-                    selectedCountDisplay.classList.remove('text-gold');
-                    selectedCountDisplay.classList.add('text-emerald-400');
-                    confirmBtn.disabled = false;
-                    confirmBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-                } else {
-                    selectedCountDisplay.classList.add('text-gold');
-                    selectedCountDisplay.classList.remove('text-emerald-400');
-                    confirmBtn.disabled = true;
-                    confirmBtn.classList.add('opacity-50', 'cursor-not-allowed');
-                }
-            }
-            
-            // -- STATE MANAGEMENT --
-            if (state.resultsRevealed) {
-                // --- FINAL RESULTS PHASE (THE TABLE ROUND) ---
-                countEl.innerText = "A Vontade do Povo";
-                statusText.innerText = "REIS DEFINIDOS";
-                statusText.className = "text-gold font-black uppercase tracking-widest";
-                titleEl.innerText = "A Távola dos 4 Reis";
-                acclamationMsg.classList.add('hidden');
-                voterBox.classList.add('hidden');
-                candidateFormBox.classList.add('hidden');
-
-                // Logic: 
-                // 1. Sort by Votes DESC, then Timestamp ASC (Antiquity)
-                let sortedCandidates = [...state.candidates].sort((a, b) => {
-                    if (b.votes !== a.votes) return b.votes - a.votes;
-                    return a.timestamp - b.timestamp;
-                });
-
-                // 2. Cut Top 4
-                const elected = sortedCandidates.slice(0, 4);
-
-                // 3. Shuffle for display (No ranking)
-                const shuffledElected = elected.sort(() => Math.random() - 0.5);
-
-                listEl.innerHTML = '';
-                listEl.className = "grid grid-cols-1 md:grid-cols-2 gap-6"; // 2x2 Grid
-
-                shuffledElected.forEach(c => {
-                   const item = document.createElement('div');
-                   // Special Gold Card
-                   item.className = "bg-gradient-to-b from-stone-900 to-black border-2 border-gold p-6 rounded-lg relative overflow-hidden shadow-[0_0_30px_rgba(255,215,0,0.2)] transform transition-all hover:scale-105";
-                   
-                   item.innerHTML = `
-                        <div class="absolute top-0 left-0 w-full h-1 bg-gold"></div>
-                        <div class="flex flex-col items-center text-center relative z-10">
-                            <span class="material-symbols-outlined text-5xl text-gold mb-2 drop-shadow-lg">crown</span>
-                            <h4 class="font-heading text-2xl text-white font-black mb-1">${c.name}</h4>
-                            <div class="bg-gold/20 border border-gold/50 px-3 py-1 rounded text-xs text-gold font-bold uppercase tracking-widest mb-4">
-                                ELEITO (${c.votes} Votos)
-                            </div>
-                            <p class="text-sm text-gray-300 italic font-serif">"${c.slogan}"</p>
-                            <div class="mt-4 pt-4 border-t border-white/10 w-full flex justify-center gap-2 text-gray-400 text-xs">
-                                <span class="material-symbols-outlined text-base">strategy</span>
-                                Foco: <span class="text-white font-bold">${c.strategy}</span>
-                            </div>
-                        </div>
-                   `;
-                   listEl.appendChild(item);
-                });
-                return; // Stop here for results view
-            }
-
-            // --- STANDARD VOTING / REGISTRATION PHASE ---
-            countEl.innerText = `${totalCandidates} Candidatos`;
-            const isVotingPhase = totalCandidates > 4;
-            
-            if(isVotingPhase) {
-                statusText.innerText = "VOTAÇÃO DE APROVAÇÃO (Múltipla)";
-                statusText.className = "text-purple-400 font-bold animate-pulse";
-                acclamationMsg.classList.add('hidden');
-                voterBox.classList.remove('hidden');
-            } else {
-                statusText.innerText = "Inscrições Abertas";
-                statusText.className = "text-white font-bold";
-                acclamationMsg.classList.remove('hidden');
-                voterBox.classList.add('hidden');
-                candidateFormBox.classList.remove('hidden');
-            }
-
-            listEl.innerHTML = '';
-            listEl.className = "grid grid-cols-1 md:grid-cols-2 gap-4";
-
-            if(state.candidates.length === 0) {
-                 listEl.innerHTML = '<div class="text-gray-500 italic col-span-2 text-center py-10">Nenhum candidato se apresentou ainda.</div>';
-                 return;
-            }
-
-            state.candidates.forEach((c, i) => {
-                const isSelected = state.currentSelections.has(i);
-                const item = document.createElement('div');
-                // Add selection styles if voting phase
-                let selectionClasses = "";
-                let clickHandler = "";
-                
-                if(isVotingPhase) {
-                    selectionClasses = `cursor-pointer hover:border-purple-500 candidate-card ${isSelected ? 'selected border-emerald-500 bg-emerald-900/10 shadow-[0_0_15px_rgba(16,185,129,0.2)]' : 'border-stone-700'}`;
-                    clickHandler = `onclick="toggleCandidateSelection(${i})"`;
-                } else {
-                    selectionClasses = "border-stone-700";
-                }
-
-                item.className = `bg-stone-900 border p-4 rounded relative overflow-hidden transition-all group ${selectionClasses}`;
-                if(isVotingPhase) item.setAttribute('onclick', `toggleCandidateSelection(${i})`);
-                
-                // Farm Icon logic
-                let farmIcon = 'help';
-                if(c.strategy === 'Ferro') farmIcon = 'shield';
-                if(c.strategy === 'Ouro') farmIcon = 'payments';
-                if(c.strategy === 'Raid') farmIcon = 'local_fire_department';
-                if(c.strategy === 'XP') farmIcon = 'bolt';
-
-                // Visual Checkmark for selection
-                const checkmark = isVotingPhase ? `
-                    <div class="absolute top-2 right-2 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${isSelected ? 'bg-emerald-500 border-emerald-500 scale-110' : 'border-stone-600 bg-black/50'}">
-                        ${isSelected ? '<span class="material-symbols-outlined text-white text-sm">check</span>' : ''}
-                    </div>
-                ` : '';
-
-                item.innerHTML = `
-                    ${checkmark}
-                    <div class="flex justify-between items-start relative z-10 mb-2 pr-8">
-                        <h4 class="font-heading text-lg text-white font-bold">${c.name}</h4>
-                    </div>
-                    <div class="flex items-center gap-2 mb-3">
-                         <div class="text-xs bg-black/40 px-2 py-1 rounded border border-stone-600 text-gray-400 flex items-center gap-1">
-                            <span class="material-symbols-outlined text-sm">${farmIcon}</span>
-                            ${c.strategy}
-                        </div>
-                    </div>
-                    <p class="text-sm text-gray-400 italic font-serif border-l-2 border-purple-500/50 pl-3">"${c.slogan}"</p>
-                `;
-                listEl.appendChild(item);
-            });
-        }
-
 
         // --- GLASS PICKER & CLAN REGISTRATION ---
         // (Restante do código permanece o mesmo)
@@ -1982,6 +1757,42 @@
         function updateClanCountUi() {
              document.getElementById('clan-count').innerText = `(${state.registeredClans.length}/${state.CLAN_LIMIT})`;
         }
+           // -----------------------------------------------------------
+        // 5. FUNÇÃO DE CONTROLE DE DIAS (Era da Guerra)
+        // [EDITAR AQUI] Se quiser mudar a data de início da saga
+        // -----------------------------------------------------------
+        function updateServerUptime() {
+             const startDate = new Date('2025-12-15T18:00:00'); // Data de Inicio da Saga
+             const now = new Date();
+             const diff = now - startDate;
+             
+             let days = Math.floor(diff / (1000 * 60 * 60 * 24));
+             if (days < 0) days = 0; // Se acessarem antes da data, mostra 0
+             
+             const el = document.getElementById('server-days');
+             if(el) el.innerText = days;
+        }
+
+        function copyColorCode() { navigator.clipboard.writeText(document.getElementById('clan-color').value); document.getElementById('copy-feedback').classList.remove('opacity-0'); setTimeout(() => document.getElementById('copy-feedback').classList.add('opacity-0'), 2000); }
+        function updateThemeInfo() { /* Lógica de tema */ }
+
+        // Inicialização Global
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchParticipants();
+            fetchClans();
+            updateServerUptime(); // Chama a nova função de dias
+            
+            // Popula selects
+            const themeSelect = document.getElementById('clan-theme');
+            if(themeSelect && themeSelect.options.length <= 1) {
+                Object.keys(clanThemes).forEach(key => {
+                    const option = document.createElement('option');
+                    option.value = key;
+                    option.text = `${clanThemes[key].symbol} ${key}`;
+                    themeSelect.appendChild(option);
+                });
+            }
+        });
     </script>
 </body>
 </html>
