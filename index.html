@@ -1484,21 +1484,65 @@
         
         let isPurgeMode = false;
         function toggleWarMode() {
-             isPurgeMode = !isPurgeMode;
-             // (Sua lógica visual de toggle war mode aqui...)
-             // Mantive simplificado para não estourar o limite, copie a lógica visual do seu backup se precisar
-             const btn = document.getElementById('mode-toggle');
-             const text = document.getElementById('status-text');
-             if(isPurgeMode) {
-                 btn.classList.replace('bg-gray-700', 'bg-red-900');
-                 text.innerText = "🩸 CAOS E SAQUE";
-                 text.classList.replace('text-emerald-500', 'text-red-500');
-             } else {
-                 btn.classList.replace('bg-red-900', 'bg-gray-700');
-                 text.innerText = "🕊️ CONSTRUÇÃO E DIPLOMACIA";
-                 text.classList.replace('text-red-500', 'text-emerald-500');
-             }
+            isPurgeMode = !isPurgeMode;
+            const btn = document.getElementById('mode-toggle');
+            const circle = document.getElementById('toggle-circle');
+            const icon = document.getElementById('toggle-icon');
+            const bg = document.getElementById('rules-bg');
+            const container = document.getElementById('rules-container');
+            const title = document.getElementById('rules-title');
+            const pvpText = document.getElementById('pvp-text');
+            const baseText = document.getElementById('base-text');
+            const statusText = document.getElementById('status-text');
+            const pvpIcon = document.getElementById('pvp-icon');
+            const baseIcon = document.getElementById('base-icon');
+
+            if (isPurgeMode) {
+                btn.classList.replace('bg-gray-700', 'bg-red-900');
+                circle.classList.add('translate-x-10');
+                icon.innerText = 'skull';
+                icon.classList.add('text-red-600');
+                icon.classList.remove('text-black');
+                if(bg) bg.classList.replace('bg-emerald-900', 'bg-red-900');
+                if(container) container.classList.replace('border-stone-600', 'border-red-600');
+                
+                if(title) {
+                    title.innerText = "O Expurgo (Sáb/Dom/Feriados)";
+                    title.classList.replace('text-emerald-400', 'text-red-500');
+                }
+                if(pvpText) pvpText.innerHTML = "<span class='text-red-400 font-bold'>LIBERADO 24H.</span> O mapa inteiro é uma arena.";
+                if(baseText) baseText.innerHTML = "SAQUE PERMITIDO (Baús/Fornalhas). <br><span class='text-xs text-red-400'>Lei da Destruição: Quebre o necessário para entrar. Proibido demolir por maldade.</span>";
+                if(baseIcon) baseIcon.innerText = 'meeting_room';
+                if(baseIcon) baseIcon.classList.add('text-red-500');
+                if(statusText) {
+                    statusText.innerText = "🩸 CAOS E SAQUE";
+                    statusText.classList.replace('text-emerald-500', 'text-red-500');
+                }
+            } else {
+                btn.classList.replace('bg-red-900', 'bg-gray-700');
+                circle.classList.remove('translate-x-10');
+                icon.innerText = 'radio_button_unchecked';
+                icon.classList.remove('text-red-600');
+                icon.classList.add('text-black');
+                if(bg) bg.classList.replace('bg-red-900', 'bg-emerald-900');
+                if(container) container.classList.replace('border-red-600', 'border-stone-600');
+                
+                if(title) {
+                    title.innerText = "Segunda a Sexta";
+                    title.classList.replace('text-red-500', 'text-emerald-400');
+                }
+                if(pvpText) pvpText.innerText = "Permitido apenas durante a NOITE (no jogo). De dia, só duelos aceitos.";
+                if(pvpIcon) pvpIcon.classList.remove('text-red-500');
+                if(baseText) baseText.innerText = "INTOCÁVEIS. Proibido invadir terreno inimigo.";
+                if(baseIcon) baseIcon.innerText = 'fort';
+                if(baseIcon) baseIcon.classList.remove('text-red-500');
+                if(statusText) {
+                    statusText.innerText = "🕊️ CONSTRUÇÃO E DIPLOMACIA";
+                    statusText.classList.replace('text-red-500', 'text-emerald-500');
+                }
+            }
         }
+
 
         // --- 7. INICIALIZAÇÃO ---
         document.addEventListener('DOMContentLoaded', () => {
